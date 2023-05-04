@@ -1,6 +1,6 @@
-import { Box, Button, Input, List, ListItem } from '@mui/joy'
+import { NestedPlaylist } from '@/components/playlist/nested-playlist'
+import { Grid, Button, Input, List, ListItem } from '@mui/joy'
 import { useState } from 'react'
-import useSWR from 'swr'
 
 type Artist = {
   name: string
@@ -12,19 +12,10 @@ type Track = {
   id: number
 }
 
-type Playlist = {
-  id: string
-  name: string
-}
-
 export default function Home() {
   const [trackSearch, setTrackSearch] = useState('')
-  const [playlistFilter, setPlaylistFilter] = useState('')
   const [tracks, setTracks] = useState<Track[]>([])
-  const { data: playlists } = useSWR<Playlist[]>('api/beatport/getplaylists', async () => {
-    const res = await fetch('api/beatport/getplaylists')
-    return res.json()
-  })
+
 
   const handleSearch = async () => {
     const query = new URLSearchParams()
@@ -37,27 +28,25 @@ export default function Home() {
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: '50px 200px' }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-          <Input value={trackSearch} onChange={(e) => setTrackSearch(e.target.value)} />
-          <Button onClick={handleSearch}>Search</Button>
-        </Box>
-        <Box>
-          <List>
+    <Grid container spacing={2}>
+      <Grid xs={8} container spacing={2}>
+        <Grid xs={9}>
+          <Input sx={{ width: '100%' }} value={trackSearch} onChange={(e) => setTrackSearch(e.target.value)} />
+        </Grid>
+        <Grid xs={3}>
+          <Button sx={{ width: '100%' }} onClick={handleSearch}>Search</Button>
+        </Grid>
+        <Grid xs={12}>
+          <List sx={{ width: '100%' }}>
             {tracks.map((track) => (
-              <ListItem key={track.id}>{`${track.artists[0].name} - ${track.name}`}</ListItem>
+              <ListItem key={track.id}>{`${track.artists[0]?.name ?? 'Unknown Artist'} - ${track.name}`}</ListItem>
             ))}
           </List>
-        </Box>
-      </Box>
-      <Box>
-        <List>
-          {playlists?.map((playlist) => (
-            <ListItem key={playlist.id}>{`${playlist.name}`}</ListItem>
-          ))}
-        </List>
-      </Box>
-    </Box>
+        </Grid>
+      </Grid>
+      <Grid xs={4}>
+        <NestedPlaylist />
+      </Grid>
+    </Grid>
   )
 }

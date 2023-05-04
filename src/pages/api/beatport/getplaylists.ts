@@ -1,3 +1,6 @@
+import { Paginated } from '@/domain/paginated'
+import { Playlist } from '@/domain/playlist'
+import { A, O, S, flow } from '@mobily/ts-belt'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const url = 'https://api.beatport.com/v4/my/playlists/'
@@ -19,6 +22,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).end()
   }
 
-  const { results } = await bpRes.json()
-  return res.json(results)
+  const { results } = await bpRes.json() as Paginated<Playlist>
+  const { grouped } = req.query as { grouped?: string }
+
+  return res.json(grouped === 'true' ? groupPlaylists(results) : results)
+}
+
+function groupPlaylists(playlists: Playlist[]) {
+  const selectKey = flow(S.split('-'), A.head, O.getWithDefault<string>('Unknown'), S.trim)
+  return A.groupBy(playlists, playlist => selectKey(playlist.name))
 }

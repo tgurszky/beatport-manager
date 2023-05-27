@@ -1,16 +1,8 @@
 import { NestedPlaylist } from '@/components/playlist/nested-playlist'
-import { Grid, Stack, FormControl, Input, Button, List, ListItem } from '@mui/joy'
+import { Grid, Stack, FormControl, Input, Button } from '@mui/joy'
 import { FormEvent, useEffect, useRef, useState } from 'react'
-
-type Artist = {
-    name: string
-}
-
-type Track = {
-    artists: Artist[]
-    name: string
-    id: number
-}
+import Tracklist from '../components/tracklist/tracklist'
+import { Track } from '../domain/tracks'
 
 export default function Home() {
     const [trackSearch, setTrackSearch] = useState('')
@@ -71,11 +63,7 @@ export default function Home() {
                             />
                         </FormControl>
                     </form>
-                    <List>
-                        {tracks.map((track) => (
-                            <ListItem key={track.id}>{`${track.artists[0]?.name ?? 'Unknown Artist'} - ${track.name}`}</ListItem>
-                        ))}
-                    </List>
+                    <Tracklist tracks={tracks} />
                 </Stack>
             </Grid>
             <Grid xs={4}>

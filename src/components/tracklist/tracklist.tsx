@@ -1,6 +1,6 @@
 import PlayArrow from "@mui/icons-material/PlayArrow";
 import Pause from "@mui/icons-material/Pause";
-import { Button, Checkbox, Sheet, Table } from "@mui/joy";
+import { Button, Checkbox, Sheet, Stack, Table, Typography } from "@mui/joy";
 import { Track } from "../../domain/tracks";
 
 type Props = {
@@ -34,12 +34,18 @@ export default function ({ tracks, selectedTrackIds, onSelectTrack, onSampleChan
                     <tr key={track.id}>
                         <th><Checkbox onChange={() => onSelectTrack(track.id)} checked={selectedTrackIds.includes(track.id)} /></th>
                         <th><Button
-                            variant={ sample?.id === track.id ? "soft" : "outlined" }
-                            startDecorator={ sample?.id === track.id && isSamplePlaying ? <Pause /> : <PlayArrow />}
+                            sx={{ width: '100%', textAlign: 'left' }}
+                            variant={sample?.id === track.id ? "soft" : "outlined"}
+                            startDecorator={sample?.id === track.id && isSamplePlaying ? <Pause /> : <PlayArrow />}
                             onClick={() => onSampleChanged(track)}
                         >
-                            {track.name}
-                        </Button></th>
+                            <Stack>
+                                <Typography>{track.name}</Typography>
+                                <Typography level="body3">{track.mix_name}</Typography>
+                            </Stack>
+                        </Button>
+
+                        </th>
                         <th>{track.genre.name}</th>
                         <th>{track.artists[0]?.name}</th>
                         <th>{track.bpm}</th>

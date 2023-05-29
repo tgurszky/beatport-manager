@@ -21,6 +21,7 @@ export default function Home() {
         const keydownHandler = (e: KeyboardEvent) => {
             if (e.ctrlKey && e.key === 'k') {
                 e.preventDefault()
+                inputRef.current?.setSelectionRange(0, trackSearch.length)
                 inputRef.current?.focus()
             }
         }
@@ -53,6 +54,7 @@ export default function Home() {
 
     const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        setSelectedTrackIds([])
         setLoading(true)
         const query = new URLSearchParams()
         query.append('search', trackSearch)

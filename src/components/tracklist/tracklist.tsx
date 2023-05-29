@@ -1,13 +1,18 @@
-import { Checkbox, Sheet, Table } from "@mui/joy";
+import PlayArrow from "@mui/icons-material/PlayArrow";
+import Pause from "@mui/icons-material/Pause";
+import { Button, Checkbox, Sheet, Table } from "@mui/joy";
 import { Track } from "../../domain/tracks";
 
 type Props = {
     tracks: Track[]
     selectedTrackIds: number[]
     onSelectTrack: (id: number) => void
+    onSampleChanged: (track: Track) => void
+    sample: Track | null
+    isSamplePlaying: boolean
 }
 
-export default function ({ tracks, selectedTrackIds, onSelectTrack }: Props) {
+export default function ({ tracks, selectedTrackIds, onSelectTrack, onSampleChanged, sample, isSamplePlaying }: Props) {
     return <Sheet sx={{ height: 'calc(100vh - 72px)', overflow: 'auto' }}>
         <Table
             borderAxis="bothBetween"
@@ -27,8 +32,14 @@ export default function ({ tracks, selectedTrackIds, onSelectTrack }: Props) {
             <tbody>
                 {tracks.map(track => (
                     <tr key={track.id}>
-                        <th><Checkbox onChange={() => onSelectTrack(track.id)} checked={selectedTrackIds.includes(track.id)}/></th>
-                        <th>{track.name}</th>
+                        <th><Checkbox onChange={() => onSelectTrack(track.id)} checked={selectedTrackIds.includes(track.id)} /></th>
+                        <th><Button
+                            variant={ sample?.id === track.id ? "soft" : "outlined" }
+                            startDecorator={ sample?.id === track.id && isSamplePlaying ? <Pause /> : <PlayArrow />}
+                            onClick={() => onSampleChanged(track)}
+                        >
+                            {track.name}
+                        </Button></th>
                         <th>{track.genre.name}</th>
                         <th>{track.artists[0]?.name}</th>
                         <th>{track.bpm}</th>

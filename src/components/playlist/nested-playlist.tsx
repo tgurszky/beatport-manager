@@ -3,18 +3,19 @@ import { List, ListItem, ListItemButton, ListItemContent, ListItemDecorator } fr
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import { getPlaylists } from '@/fetchers/playlist'
 import { useState } from 'react'
+import { Playlist } from '../../domain/playlist'
 
-export const NestedPlaylist = () => {
+type Props = {
+    selectedPlaylist: Playlist | null
+    onSelectionChanged: (playlist: Playlist) => void
+}
+
+export const NestedPlaylist = ({ selectedPlaylist, onSelectionChanged }: Props) => {
     const { data: playlists } = useSWR('playlists', () => getPlaylists('grouped'))
     const [openedKey, setOpenedKey] = useState('')
-    const [selected, setSelected] = useState('')
 
     const handleGroupClick = (groupKey: string) => {
         setOpenedKey(opened => opened === groupKey ? '' : groupKey)
-    }
-
-    const handlePlaylistClick = (playlistId: string) => {
-        setSelected(selected => selected === playlistId ? '' : playlistId)
     }
 
     if (!playlists) {
@@ -23,7 +24,7 @@ export const NestedPlaylist = () => {
 
     return <List size='sm' >
         {Object.entries(playlists).map(([key, playlists]) => (
-            <ListItem nested>
+            <ListItem nested key={key}>
                 <ListItem>
                     <ListItemButton
                         onClick={() => handleGroupClick(key)}
@@ -42,8 +43,8 @@ export const NestedPlaylist = () => {
                         {playlists.map(playlist => (
                             <ListItem key={playlist.id}>
                                 <ListItemButton
-                                    onClick={() => handlePlaylistClick(playlist.id)}
-                                    selected={selected === playlist.id}
+                                    onClick={() => onSelectionChanged(playlist)}
+                                    selected={selectedPlaylist?.id === playlist.id}
                                 >
                                     <ListItemContent>{playlist.name}</ListItemContent>
                                 </ListItemButton>

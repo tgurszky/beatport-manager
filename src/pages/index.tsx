@@ -84,7 +84,9 @@ export default function Home() {
             })
             if (!res.ok) {
                 console.warn('Adding tracks to playlist failed.')
+                return
             }
+            setSelectedTrackIds([])
         } finally {
             setAddLoading(false)
         }

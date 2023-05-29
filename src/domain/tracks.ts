@@ -6,7 +6,7 @@ export type Track = {
     bpm: number
     artists: Artist[]
     genre: Genre
-    key: Key
+    key: Key | null
     sample_url: string
     sample_start_ms: number
     sample_end_ms: number

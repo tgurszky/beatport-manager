@@ -49,7 +49,7 @@ export default function ({ tracks, selectedTrackIds, onSelectTrack, onSampleChan
                         <th>{track.genre.name}</th>
                         <th>{track.artists[0]?.name}</th>
                         <th>{track.bpm}</th>
-                        <th>{`${track.key.camelot_number}${track.key.camelot_letter}`}</th>
+                        <th>{track.key ? `${track.key?.camelot_number}${track.key?.camelot_letter}` : ''}</th>
                     </tr>))}
             </tbody>
         </Table>

@@ -41,7 +41,7 @@ export default function ({ tracks, selectedTrackIds, onSelectTrack, onSampleChan
                         >
                             <Stack>
                                 <Typography>{track.name}</Typography>
-                                <Typography level="body3">{track.mix_name}</Typography>
+                                <Typography level="body3">{`${track.mix_name} (${track.length})`}</Typography>
                             </Stack>
                         </Button>
 

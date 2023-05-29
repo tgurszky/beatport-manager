@@ -7,6 +7,7 @@ import { Track } from '../domain/tracks'
 export default function Home() {
     const [trackSearch, setTrackSearch] = useState('')
     const [tracks, setTracks] = useState<Track[]>([])
+    const [selectedTrackIds, setSelectedTrackIds] = useState<number[]>([])
     const [isLoading, setLoading] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
 
@@ -63,7 +64,10 @@ export default function Home() {
                             />
                         </FormControl>
                     </form>
-                    <Tracklist tracks={tracks} />
+                    <Tracklist tracks={tracks} selectedTrackIds={selectedTrackIds}
+                        onSelectTrack={(trackId) => setSelectedTrackIds((ids) => ids.includes(trackId) ?
+                            ids.filter(i => i != trackId) :
+                            [...ids, trackId])} />
                 </Stack>
             </Grid>
             <Grid xs={4}>

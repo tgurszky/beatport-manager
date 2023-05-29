@@ -4,7 +4,6 @@ export type Track = {
     mix_name: string
     length: string
     bpm: number
-    is_available_for_streaming: boolean
     artists: Artist[]
     genre: Genre
     key: Key

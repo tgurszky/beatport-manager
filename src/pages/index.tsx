@@ -15,6 +15,7 @@ export default function Home() {
     const [isSamplePlaying, setSamplePlaying] = useState(false)
     const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(null)
     const audioRef = useRef<HTMLAudioElement>(null)
+    const [addLoading, setAddLoading] = useState(false)
 
     useEffect(() => {
         const keydownHandler = (e: KeyboardEvent) => {
@@ -63,6 +64,29 @@ export default function Home() {
             }
         } finally {
             setLoading(false)
+        }
+    }
+
+    const handleAddToPlaylist = async () => {
+        if (!selectedPlaylist) {
+            return
+        }
+        setAddLoading(true)
+        const query = new URLSearchParams()
+        query.append('playlistId', selectedPlaylist.id)
+        const body = JSON.stringify({
+            track_ids: selectedTrackIds
+        })
+        try {
+            const res = await fetch(`api/beatport/add?${query}`, {
+                method: 'POST',
+                body
+            })
+            if (!res.ok) {
+                console.warn('Adding tracks to playlist failed.')
+            }
+        } finally {
+            setAddLoading(false)
         }
     }
 
@@ -115,7 +139,10 @@ export default function Home() {
                     <audio ref={audioRef} style={{ width: '100%' }} src={sampleTrack?.sample_url} controls />
                     <Button
                         sx={{ width: '100%' }}
-                        disabled={selectedTrackIds.length === 0 || selectedPlaylist === null}>
+                        disabled={selectedTrackIds.length === 0 || selectedPlaylist === null}
+                        loading={addLoading}
+                        onClick={handleAddToPlaylist}
+                    >
                         {`Add ${selectedTrackIds.length} selected to ${selectedPlaylist?.name}`}</Button>
                     <NestedPlaylist
                         selectedPlaylist={selectedPlaylist}
